@@ -6,22 +6,11 @@
 /*   By: yang <yang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/17 16:09:26 by yang              #+#    #+#             */
-/*   Updated: 2022/02/17 16:17:08 by yang             ###   ########.fr       */
+/*   Updated: 2022/02/23 10:17:55 by yang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-bool	is_space(char c)
-{
-	return (c == ' ' || c == '\t' || c == '\n' || c == '\v'
-		|| c == '\r' || c == '\f');
-}
-
-bool	is_sign(char c)
-{
-	return (c == '+' || c == '-');
-}
 
 bool	is_number(char c)
 {
@@ -37,9 +26,10 @@ long	ft_atoi(const char *str)
 	i = 0;
 	sign = 1;
 	result = 0;
-	while (is_space(str[i]))
+	while (str[i] == '-' || str[i] == '\t' || str[i] == '\n'
+			|| str[i] == '\v' || str[i] == '\r' || str[i] == '\f')
 		i++;
-	if (is_sign(str[i]))
+	if (str[i] == '+' || str[i] == '-')
 	{
 		if (str[i] == '-')
 			sign *= -1;
@@ -51,4 +41,34 @@ long	ft_atoi(const char *str)
 		i++;
 	}
 	return (sign * result);
+}
+
+static int	check_non_numeric(char *str)
+{
+	int	i;
+
+	i = 0;
+	if (str[i] == '+')
+		i++;
+	while (str[i])
+	{
+		if (!is_number(str[i]))
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
+int	check_arg(char *argv[])
+{
+	int i;
+
+	i = 1;
+	while (argv[i])
+	{
+		if (check_non_numeric(argv[i]))
+			return (1);
+		i++;
+	}
+	return (0);
 }

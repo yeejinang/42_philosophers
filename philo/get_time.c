@@ -6,13 +6,13 @@
 /*   By: yang <yang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/21 14:35:16 by yang              #+#    #+#             */
-/*   Updated: 2022/02/21 14:35:37 by yang             ###   ########.fr       */
+/*   Updated: 2022/02/23 10:08:43 by yang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-long	starting_time(void)
+long	get_time(void)
 {
 	struct timeval	tv;
 	int				timestamp;
@@ -23,17 +23,7 @@ long	starting_time(void)
 	return (-1);
 }
 
-long	current_time(long int start_time)
+long	current_time(long start_time)
 {
-	struct timeval	tv;
-	int				timestamp;
-	long 			current_time;
-
-	timestamp = gettimeofday(&tv, NULL);
-	if (start_time != -1 && timestamp != -1)
-	{
-		current_time = tv.tv_sec * 1000 + tv.tv_usec / 1000;
-		return (current_time - start_time);
-	}
-	return (-1);
+	return (get_time() - start_time);
 }

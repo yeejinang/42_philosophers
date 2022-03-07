@@ -6,7 +6,7 @@
 /*   By: yang <yang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/16 18:00:09 by yang              #+#    #+#             */
-/*   Updated: 2022/03/07 15:20:08 by yang             ###   ########.fr       */
+/*   Updated: 2022/03/07 15:27:28 by yang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include <unistd.h>
 # include <sys/time.h>
 # include <pthread.h>
+# include <semaphore.h>
 # include <stdlib.h>
 # include <stdio.h>
 # include <stdbool.h>
@@ -36,10 +37,10 @@ typedef struct s_rules
 	int				times_must_eat;
 	long			start_time;
 	int				is_died;
-	pthread_mutex_t print;
-	pthread_mutex_t	lock_info;
-	pthread_mutex_t	*fork;
-	pthread_t		*tid;
+	sem_t 			print;
+	sem_t			lock_info;
+	sem_t			fork;
+	pid_t			*pid;
 }	t_rules;
 
 typedef struct s_philo

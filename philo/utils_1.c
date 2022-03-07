@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   utils_1.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yang <yang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/17 16:09:26 by yang              #+#    #+#             */
-/*   Updated: 2022/02/23 10:17:55 by yang             ###   ########.fr       */
+/*   Updated: 2022/03/07 14:06:53 by yang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ long	ft_atoi(const char *str)
 	sign = 1;
 	result = 0;
 	while (str[i] == '-' || str[i] == '\t' || str[i] == '\n'
-			|| str[i] == '\v' || str[i] == '\r' || str[i] == '\f')
+		|| str[i] == '\v' || str[i] == '\r' || str[i] == '\f')
 		i++;
 	if (str[i] == '+' || str[i] == '-')
 	{
@@ -61,14 +61,20 @@ static int	check_non_numeric(char *str)
 
 int	check_arg(char *argv[])
 {
-	int i;
+	int	i;
 
-	i = 1;
-	while (argv[i])
+	i = 0;
+	while (argv[++i])
 	{
 		if (check_non_numeric(argv[i]))
 			return (1);
-		i++;
 	}
 	return (0);
+}
+
+void	free_exit(t_rules *rules)
+{
+	free(rules->tid);
+	free(rules->philo);
+	free(rules->fork);
 }

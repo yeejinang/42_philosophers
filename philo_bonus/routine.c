@@ -6,7 +6,7 @@
 /*   By: yang <yang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/21 17:02:19 by yang              #+#    #+#             */
-/*   Updated: 2022/03/07 14:08:05 by yang             ###   ########.fr       */
+/*   Updated: 2022/03/07 15:39:51 by yang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,16 +14,16 @@
 
 static void	pickup_fork(t_philo *philo)
 {
-	pthread_mutex_lock(&(philo->rules->fork[philo->first_fork]));
+	sem_wait(philo->rules->fork);
 	print_state(philo, "has taken a fork");
-	pthread_mutex_lock(&philo->rules->fork[philo->second_fork]);
+	sem_wait(philo->rules->fork);
 	print_state(philo, "has taken a fork");
-	pthread_mutex_lock(&philo->rules->lock_info);
+	sem_wait(philo->rules->lock_info);
 }
 
 static void	putdown_fork(t_philo *philo)
 {
-	pthread_mutex_unlock(&philo->rules->fork[philo->first_fork]);
+	sem_post(&philo->rules->fork[philo->first_fork]);
 	pthread_mutex_unlock(&philo->rules->fork[philo->second_fork]);
 }
 

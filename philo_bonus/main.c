@@ -6,7 +6,7 @@
 /*   By: yang <yang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/16 17:59:18 by yang              #+#    #+#             */
-/*   Updated: 2022/03/07 14:04:53 by yang             ###   ########.fr       */
+/*   Updated: 2022/03/07 15:38:18 by yang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,18 +31,18 @@ static int	parse_info(int argc, char *argv[], t_rules *rules)
 	return (0);
 }
 
-static void	set_fork(t_rules *rules, t_philo *philo)
-{
-	int	temp;
+/* Named semaphore: provide access to a resource between multiple processes
+sem_unlink: removed specified name semaphore in the kernal
+sem_open: create a named semaphore */
 
-	philo->first_fork = philo->id;
-	philo->second_fork = (philo->id + 1) % (rules->total);
-	if (philo->second_fork < philo->first_fork)
-	{
-		temp = philo->first_fork;
-		philo->first_fork = philo->second_fork;
-		philo->second_fork = temp;
-	}
+static void init_sem(t_rules *rules)
+{
+	sem_unlink("/fork");
+	sem_unlink("/print");
+	sem_unlink("/lock_info");
+	rules->fork = sem_open("/fork", O_CREATE, 0644, rules->total);
+	rules->print = sem_open("/print", O_CREATE, 0644, 1);
+	rules->lock_info = sem_open("lock_info", O_CREATE, 0644, 1);
 }
 
 int	init(int argc, char *argv[], t_rules *rules)
@@ -53,22 +53,15 @@ int	init(int argc, char *argv[], t_rules *rules)
 		return (1);
 	i = -1;
 	rules->philo = malloc(sizeof(t_philo) * rules->total);
-	rules->fork = malloc(sizeof(pthread_mutex_t) * rules->total);
-	rules->tid = malloc(sizeof(pthread_t) * rules->total);
-	if (!rules->philo || !rules->fork || !rules->tid)
+	if (!rules->philo)
 		return (1);
 	while (++i < rules->total)
 	{
 		rules->philo[i].id = i;
 		rules->philo[i].count_meal = 0;
 		rules->philo[i].last_meal = 0;
-		set_fork(rules, &rules->philo[i]);
-		if (pthread_mutex_init(&rules->fork[i], NULL))
-			return (1);
 	}
-	if (pthread_mutex_init(&rules->print, NULL)
-		|| pthread_mutex_init(&rules->lock_info, NULL))
-		return (1);
+	init_sem(rules);
 	return (0);
 }
 

@@ -6,7 +6,7 @@
 #    By: yang <yang@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/02/22 14:10:12 by yang              #+#    #+#              #
-#    Updated: 2022/03/07 09:28:57 by yang             ###   ########.fr        #
+#    Updated: 2022/03/09 10:34:07 by yang             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,7 +24,7 @@ NAME	= philo
 
 CC		= gcc
 
-CFLAGS	= -Wall -Wextra -Werror -pthread
+CFLAGS	= -pthread
 
 DIC		= ./
 

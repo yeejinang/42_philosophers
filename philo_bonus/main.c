@@ -6,7 +6,7 @@
 /*   By: yang <yang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/16 17:59:18 by yang              #+#    #+#             */
-/*   Updated: 2022/03/07 15:38:18 by yang             ###   ########.fr       */
+/*   Updated: 2022/03/09 10:58:27 by yang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,9 +40,9 @@ static void init_sem(t_rules *rules)
 	sem_unlink("/fork");
 	sem_unlink("/print");
 	sem_unlink("/lock_info");
-	rules->fork = sem_open("/fork", O_CREATE, 0644, rules->total);
-	rules->print = sem_open("/print", O_CREATE, 0644, 1);
-	rules->lock_info = sem_open("lock_info", O_CREATE, 0644, 1);
+	rules->fork = sem_open("/fork", O_CREAT, 0644, rules->total);
+	rules->print = sem_open("/print", O_CREAT, 0644, 1);
+	rules->lock_info = sem_open("/lock_info", O_CREAT, 0644, 1);
 }
 
 int	init(int argc, char *argv[], t_rules *rules)
@@ -53,6 +53,7 @@ int	init(int argc, char *argv[], t_rules *rules)
 		return (1);
 	i = -1;
 	rules->philo = malloc(sizeof(t_philo) * rules->total);
+	rules->pid = malloc(sizeof(pid_t) * rules->total);
 	if (!rules->philo)
 		return (1);
 	while (++i < rules->total)
@@ -60,6 +61,7 @@ int	init(int argc, char *argv[], t_rules *rules)
 		rules->philo[i].id = i;
 		rules->philo[i].count_meal = 0;
 		rules->philo[i].last_meal = 0;
+		rules->philo[i].rules = rules;
 	}
 	init_sem(rules);
 	return (0);

@@ -6,7 +6,7 @@
 /*   By: yang <yang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/21 17:02:19 by yang              #+#    #+#             */
-/*   Updated: 2022/03/07 14:08:05 by yang             ###   ########.fr       */
+/*   Updated: 2022/03/08 14:25:03 by yang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ static void	*routine(void *argc)
 	{
 		pickup_fork(philo);
 		print_state(philo, "is eating");
-		philo->last_meal = current_time(philo->rules->start);
+		philo->last_meal = current_time(philo->rules->start_time);
 		pthread_mutex_unlock(&philo->rules->lock_info);
 		ft_usleep(philo->rules->time_to_eat);
 		philo->count_meal++;
@@ -80,7 +80,7 @@ int	philosopher(t_rules *rules)
 	int			i;
 
 	i = -1;
-	rules->start = get_time();
+	rules->start_time = get_time();
 	while (++i < rules->total)
 	{
 		rules->philo[i].rules = rules;

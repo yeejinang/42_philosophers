@@ -6,7 +6,7 @@
 /*   By: yang <yang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/17 16:09:26 by yang              #+#    #+#             */
-/*   Updated: 2022/03/07 14:06:53 by yang             ###   ########.fr       */
+/*   Updated: 2022/03/09 11:17:00 by yang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,6 @@ int	check_arg(char *argv[])
 
 void	free_exit(t_rules *rules)
 {
-	free(rules->tid);
+	free(rules->pid);
 	free(rules->philo);
-	free(rules->fork);
 }

@@ -6,52 +6,56 @@
 /*   By: yang <yang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 15:34:40 by yang              #+#    #+#             */
-/*   Updated: 2022/03/07 15:21:24 by yang             ###   ########.fr       */
+/*   Updated: 2022/03/09 10:52:04 by yang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	check_death(t_rules *rules)
+void	*check_death(void *argc)
 {
-	int		i;
 	long	last_meal;
-	long	last;
+	//long	last;
+	t_philo	*philo;
+	t_rules	*rules;
 
-	while (rules->is_died != 1)
+	philo = (t_philo *)argc;
+	rules = philo->rules;
+	//printf("philo: %d is died: %d\n", philo->id, rules->is_died);
+	while (rules->is_died == 0)
 	{
-		i = -1;
-		while (++i < rules->total)
+		sem_wait(rules->lock_info);
+		//printf("philo: %d is died: %d\n", philo->id, rules->is_died);
+		last_meal = current_time(rules->start_time) - philo->last_meal;
+		if (last_meal > rules->time_to_die || (rules->times_must_eat != -1
+				&& philo->count_meal == rules->times_must_eat))
 		{
-			pthread_mutex_lock(&rules->lock_info);
-			last = rules->philo[i].last_meal;
-			last_meal = current_time(rules->start_time) - last;
-			if (last_meal > rules->time_to_die || (rules->times_must_eat != -1
-					&& rules->philo[i].count_meal == rules->times_must_eat))
-			{
-				if (last_meal > rules->time_to_die)
-					print_state(&rules->philo[i], "died");
-				rules->is_died = 1;
-				pthread_mutex_unlock(&rules->lock_info);
-				break ;
-			}
-			pthread_mutex_unlock(&rules->lock_info);
+			if (last_meal > rules->time_to_die)
+				print_state(philo, "died");
+			rules->is_died = 1;
+			//philo->rules = rules;
+			//printf("philo: %d is died: %d\n", philo->id, rules->is_died);
+			sem_post(rules->lock_info);
+			exit(1);
 		}
-		usleep(500);
+		sem_post(rules->lock_info);
+		usleep(100);
 	}
+	return (NULL);
 }
 
 void	print_state(t_philo *philo, char *str)
 {
 	long	time_stamp;
+	str = (void *)str;
 
-	pthread_mutex_lock(&philo->rules->print);
+	sem_wait(philo->rules->print);
 	if (!philo->rules->is_died)
 	{
 		time_stamp = current_time(philo->rules->start_time);
 		printf("%ld %d %s\n", time_stamp, philo->id + 1, str);
 	}
-	pthread_mutex_unlock(&philo->rules->print);
+	sem_post(philo->rules->print);
 }
 
 void	ft_usleep(long duration)

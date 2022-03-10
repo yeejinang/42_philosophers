@@ -132,7 +132,7 @@ int sem_unlink(const char *name)
 ```
 The sem_unlink() function unlinks a named semaphore. The name of the semaphore is removed from the set of names used by named semaphores. If the semaphore is still in use, the semaphore is not deleted until all processes using the semaphore have ended or have called sem_close(). Using the name of an unlinked semaphore in subsequent calls to sem_open() or sem_open_np() will result in the creation of a new semaphore with the same name if the O_CREAT flag of the oflag parameter has been set.
 
-### Resources :paperclip:
+### References :paperclip:
 1. Short Intro to Threads (Playlist by CodeVault): https://www.youtube.com/playlist?list=PLfqABt5AS4FmuQf70psXrsMLEDQXNkLq2 
 2. Difference between processes and threads: https://www.youtube.com/watch?v=IKG1P4rgm54
 3. Deadlock: https://www.youtube.com/watch?v=oq29KUy29iQ

@@ -6,7 +6,7 @@
 #    By: yang <yang@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/02/22 14:10:12 by yang              #+#    #+#              #
-#    Updated: 2022/03/09 10:34:07 by yang             ###   ########.fr        #
+#    Updated: 2022/03/10 11:50:39 by yang             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,7 @@ _MAGENTA	=\e[35m
 _CYAN		=\e[96m
 _WHITE		=\e[97m
 
-NAME	= philo
+NAME	= philo_bonus
 
 CC		= gcc
 

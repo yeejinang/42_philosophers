@@ -6,7 +6,7 @@
 /*   By: yang <yang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/21 17:02:19 by yang              #+#    #+#             */
-/*   Updated: 2022/03/09 13:25:35 by yang             ###   ########.fr       */
+/*   Updated: 2022/03/10 16:58:20 by yang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,96 +14,88 @@
 
 static void	pickup_fork(t_philo *philo)
 {
-	sem_wait(philo->rules->fork);
+	sem_wait(philo->info->fork);
 	print_state(philo, "has taken a fork");
-	sem_wait(philo->rules->fork);
+	sem_wait(philo->info->fork);
 	print_state(philo, "has taken a fork");
-	sem_wait(philo->rules->lock_info);
+	sem_wait(philo->info->lock_info);
+	print_state(philo, "is eating");
+	philo->last_meal = current_time(philo->info->start_time);
+	sem_post(philo->info->lock_info);
+	ft_usleep(philo->info->time_to_eat);
+	philo->count_meal++;
 }
 
 static void	putdown_fork(t_philo *philo)
 {
-	sem_post(philo->rules->fork);
-	sem_post(philo->rules->fork);
+	sem_post(philo->info->fork);
+	sem_post(philo->info->fork);
 }
 
-static void	routine(void *argc)
+static int	routine(void *argc)
 {
-	t_philo	*philo;
-	pthread_t tid;
+	t_philo		*philo;
+	pthread_t	tid;
 
 	philo = (t_philo *)argc;
-	printf("debug: %d rules add: %p\t death: %d\n", philo->id, philo->rules, philo->rules->is_died);
-	//pthread_create(&tid, NULL, &check_death, (void *)philo);
 	if (!(philo->id % 2))
-		ft_usleep(philo->rules->time_to_eat);
-	pthread_create(&tid, NULL, &check_death, (void *)philo);
-	//pthread_detach(tid);
-	while (philo->rules->is_died != 1)
+		ft_usleep(philo->info->time_to_eat);
+	if (pthread_create(&tid, NULL, &check_death, (void *)philo))
+		return (1);
+	while (philo->info->is_died != 1)
 	{
-		//printf("philo %d is died: %d\n", philo->id, philo->rules->is_died);
 		pickup_fork(philo);
-		//printf("Philo is eating\n");
-		print_state(philo, "is eating");
-		philo->last_meal = current_time(philo->rules->start_time);
-		sem_post(philo->rules->lock_info);
-		ft_usleep(philo->rules->time_to_eat);
-		philo->count_meal++;
 		putdown_fork(philo);
+		if (philo->count_meal == philo->info->times_must_eat)
+			break ;
 		print_state(philo, "is sleeping");
-		ft_usleep(philo->rules->time_to_sleep);
+		ft_usleep(philo->info->time_to_sleep);
 		print_state(philo, "is thinking");
 	}
-	pthread_join(tid, NULL);
-	if (philo->rules->is_died)
-		exit(1);
-	exit(0);
+	if (pthread_join(tid, NULL))
+		return (1);
+	exit(1);
 }
 
-static int	exit_routine(t_rules *rules)
+static int	exit_routine(t_info *info)
 {
 	int	i;
-	int status;
+	int	status;
 
 	i = -1;
 	waitpid(-1, &status, 0);
-	while (status && ++i < rules->total)
-		kill(rules->pid[i], SIGKILL);
-	sem_close(rules->fork);
-	sem_close(rules->print);
-	sem_close(rules->lock_info);
-	sem_unlink("/fork");
-	sem_unlink("/print");
-	sem_unlink("/lock_info");
-	free_exit(rules);
+	while (status && ++i < info->total)
+		kill(info->pid[i], SIGKILL);
+	if (sem_close(info->fork) || sem_unlink("/fork")
+		|| sem_close(info->print) || sem_unlink("/print")
+		|| sem_close(info->lock_info) || sem_unlink("/lock_info"))
+		return (1);
+	free_exit(info);
 	return (0);
 }
 
-int	philosopher(t_rules *rules)
+int	philosopher(t_info *info)
 {
-	int			i;
+	int	i;
 
 	i = -1;
-	rules->start_time = get_time();
-	while (++i < rules->total)
+	info->start_time = get_time();
+	while (++i < info->total)
 	{
-		//rules->philo[i].pid = fork();
-		rules->pid[i] = fork();
-		printf("i: %d parent: %d\t child: %d\n", i, getppid(), getpid());
-		if (rules->pid[i] == 0)
+		info->pid[i] = fork();
+		if (info->pid[i] == -1)
+			exit(1);
+		if (info->pid[i] == 0)
 		{
-			printf("child process\n");
-			//routine(&rules->philo[i]);
+			if (routine(&info->philo[i]))
+				printf(BRED"Error occurred when creating thread\n");
 		}
-		//if (rules->philo[i].pid == 0)
-			//routine(&rules->philo[i]);
-		usleep(150);
+		usleep(250);
 	}
-	printf("HELLO\tparent: %d\t child: %d\n", getppid(), getpid());
-	/*if (exit_routine(rules))
+	if (exit_routine(info))
 	{
-		printf("Error occurred when exiting threads\n");
-		free_exit(rules);
-	}*/
+		printf(BRED"Error occurred when exiting threads\n");
+		free_exit(info);
+	}
 	return (0);
 }

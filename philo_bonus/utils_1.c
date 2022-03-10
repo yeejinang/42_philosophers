@@ -6,7 +6,7 @@
 /*   By: yang <yang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/17 16:09:26 by yang              #+#    #+#             */
-/*   Updated: 2022/03/09 11:17:00 by yang             ###   ########.fr       */
+/*   Updated: 2022/03/10 16:07:54 by yang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,8 +72,8 @@ int	check_arg(char *argv[])
 	return (0);
 }
 
-void	free_exit(t_rules *rules)
+void	free_exit(t_info *info)
 {
-	free(rules->pid);
-	free(rules->philo);
+	free(info->pid);
+	free(info->philo);
 }

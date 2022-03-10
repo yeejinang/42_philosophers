@@ -6,7 +6,7 @@
 /*   By: yang <yang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 15:34:40 by yang              #+#    #+#             */
-/*   Updated: 2022/03/09 10:52:04 by yang             ###   ########.fr       */
+/*   Updated: 2022/03/10 17:05:43 by yang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,30 +15,26 @@
 void	*check_death(void *argc)
 {
 	long	last_meal;
-	//long	last;
 	t_philo	*philo;
-	t_rules	*rules;
 
 	philo = (t_philo *)argc;
-	rules = philo->rules;
-	//printf("philo: %d is died: %d\n", philo->id, rules->is_died);
-	while (rules->is_died == 0)
+	while (philo->info->is_died == 0)
 	{
-		sem_wait(rules->lock_info);
-		//printf("philo: %d is died: %d\n", philo->id, rules->is_died);
-		last_meal = current_time(rules->start_time) - philo->last_meal;
-		if (last_meal > rules->time_to_die || (rules->times_must_eat != -1
-				&& philo->count_meal == rules->times_must_eat))
+		sem_wait(philo->info->lock_info);
+		last_meal = current_time(philo->info->start_time) - philo->last_meal;
+		if (last_meal > philo->info->time_to_die
+			|| philo->count_meal == philo->info->times_must_eat)
 		{
-			if (last_meal > rules->time_to_die)
+			if (last_meal > philo->info->time_to_die)
+			{
+				printf(BRED);
 				print_state(philo, "died");
-			rules->is_died = 1;
-			//philo->rules = rules;
-			//printf("philo: %d is died: %d\n", philo->id, rules->is_died);
-			sem_post(rules->lock_info);
+			}
+			philo->info->is_died = 1;
+			sem_post(philo->info->lock_info);
 			exit(1);
 		}
-		sem_post(rules->lock_info);
+		sem_post(philo->info->lock_info);
 		usleep(100);
 	}
 	return (NULL);
@@ -47,15 +43,14 @@ void	*check_death(void *argc)
 void	print_state(t_philo *philo, char *str)
 {
 	long	time_stamp;
-	str = (void *)str;
 
-	sem_wait(philo->rules->print);
-	if (!philo->rules->is_died)
+	sem_wait(philo->info->print);
+	if (!philo->info->is_died)
 	{
-		time_stamp = current_time(philo->rules->start_time);
+		time_stamp = current_time(philo->info->start_time);
 		printf("%ld %d %s\n", time_stamp, philo->id + 1, str);
 	}
-	sem_post(philo->rules->print);
+	sem_post(philo->info->print);
 }
 
 void	ft_usleep(long duration)

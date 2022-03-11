@@ -6,39 +6,11 @@
 /*   By: yang <yang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 15:34:40 by yang              #+#    #+#             */
-/*   Updated: 2022/03/10 17:05:43 by yang             ###   ########.fr       */
+/*   Updated: 2022/03/11 10:12:01 by yang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-void	*check_death(void *argc)
-{
-	long	last_meal;
-	t_philo	*philo;
-
-	philo = (t_philo *)argc;
-	while (philo->info->is_died == 0)
-	{
-		sem_wait(philo->info->lock_info);
-		last_meal = current_time(philo->info->start_time) - philo->last_meal;
-		if (last_meal > philo->info->time_to_die
-			|| philo->count_meal == philo->info->times_must_eat)
-		{
-			if (last_meal > philo->info->time_to_die)
-			{
-				printf(BRED);
-				print_state(philo, "died");
-			}
-			philo->info->is_died = 1;
-			sem_post(philo->info->lock_info);
-			exit(1);
-		}
-		sem_post(philo->info->lock_info);
-		usleep(100);
-	}
-	return (NULL);
-}
 
 void	print_state(t_philo *philo, char *str)
 {

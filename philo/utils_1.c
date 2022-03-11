@@ -6,13 +6,13 @@
 /*   By: yang <yang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/17 16:09:26 by yang              #+#    #+#             */
-/*   Updated: 2022/03/07 14:06:53 by yang             ###   ########.fr       */
+/*   Updated: 2022/03/10 12:04:15 by yang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-bool	is_number(char c)
+static bool	is_number(char c)
 {
 	return (c >= '0' && c <= '9');
 }
@@ -72,9 +72,9 @@ int	check_arg(char *argv[])
 	return (0);
 }
 
-void	free_exit(t_rules *rules)
+void	free_exit(t_info *info)
 {
-	free(rules->tid);
-	free(rules->philo);
-	free(rules->fork);
+	free(info->tid);
+	free(info->philo);
+	free(info->fork);
 }

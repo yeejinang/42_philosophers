@@ -6,7 +6,7 @@
 /*   By: yang <yang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/16 18:00:09 by yang              #+#    #+#             */
-/*   Updated: 2022/03/07 15:20:08 by yang             ###   ########.fr       */
+/*   Updated: 2022/03/10 12:04:00 by yang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@
 # define YEL "\e[0;33m"
 # define BYEL "\e[1;33m"
 
-typedef struct s_rules
+typedef struct s_info
 {
 	struct s_philo	*philo;
 	int				total;
@@ -40,7 +40,7 @@ typedef struct s_rules
 	pthread_mutex_t	lock_info;
 	pthread_mutex_t	*fork;
 	pthread_t		*tid;
-}	t_rules;
+}	t_info;
 
 typedef struct s_philo
 {
@@ -49,22 +49,22 @@ typedef struct s_philo
 	int				second_fork;
 	long			last_meal;
 	int				count_meal;
-	t_rules			*rules;
+	t_info			*info;
 }	t_philo;
 
 /* ------------ parsing info --------------- */
 int		check_arg(char *argv[]);
 long	ft_atoi(const char *str);
-int		init(int argc, char *argv[], t_rules *rules);
+int		init(int argc, char *argv[], t_info *info);
 /* ------------ get time in microsecond ------------ */
 long	get_time(void);
 long	current_time(long int start_time);
 /* ------------ routine for each threads ----------- */
-int		philosopher(t_rules *rules);
+int		philosopher(t_info *info);
 /* ------------ utils for philo ---------------- */
 void	print_state(t_philo *philo, char *str);
-void	check_death(t_rules *rules);
+void	check_death(t_info *info);
 void	ft_usleep(long duration);
-void	free_exit(t_rules *rules);
+void	free_exit(t_info *info);
 
 #endif

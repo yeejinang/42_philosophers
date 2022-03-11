@@ -6,11 +6,30 @@
 /*   By: yang <yang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 15:34:40 by yang              #+#    #+#             */
-/*   Updated: 2022/03/11 10:12:01 by yang             ###   ########.fr       */
+/*   Updated: 2022/03/11 16:28:18 by yang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+void	*check_meal(void *argc)
+{
+	int		i;
+	t_info	*info;
+
+	i = -1;
+	info = (t_info *)argc;
+	if (info->times_must_eat != -1)
+	{
+		while (++i < info->total)
+			sem_wait(info->lock_meal);
+	}
+	if (info->times_must_eat != -1)
+	{
+		sem_post(info->death);
+	}
+	return (argc);
+}
 
 void	print_state(t_philo *philo, char *str)
 {

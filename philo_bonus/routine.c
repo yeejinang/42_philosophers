@@ -6,7 +6,7 @@
 /*   By: yang <yang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/21 17:02:19 by yang              #+#    #+#             */
-/*   Updated: 2022/03/11 13:15:14 by yang             ###   ########.fr       */
+/*   Updated: 2022/03/11 16:28:30 by yang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,22 +18,19 @@ void	*check_death(void *argc)
 	t_philo	*philo;
 
 	philo = (t_philo *)argc;
-	while (!philo->info->is_died)
+	while (1)
 	{
 		sem_wait(philo->info->lock_info);
 		last_meal = current_time(philo->info->start_time) - philo->last_meal;
-		if (last_meal > philo->info->time_to_die || (philo->info->times_must_eat != -1
-					&& philo->count_meal == philo->info->times_must_eat))
+		if (last_meal > philo->info->time_to_die)
 		{
-			if (last_meal > philo->info->time_to_die)
-					print_state(philo, "died");
-			philo->info->is_died = 1;
-			//sem_post(philo->info->death);
+			print_state(philo, "died");
+			sem_post(philo->info->death);
 			sem_post(philo->info->lock_info);
-			exit(1);
+			exit(0);
 		}
 		sem_post(philo->info->lock_info);
-		usleep (100);
+		usleep (200);
 	}
 	return (NULL);
 }
@@ -64,20 +61,19 @@ static int	routine(void *argc)
 		ft_usleep(philo->info->time_to_eat);
 	if (pthread_create(&tid, NULL, &check_death, (void *)philo))
 		return (1);
-	//pthread_detach(tid);
-	while (philo->info->is_died != 1)
+	pthread_detach(tid);
+	while (philo->count_meal != philo->info->times_must_eat)
 	{
 		philo_eat(philo);
 		if (philo->count_meal == philo->info->times_must_eat)
+		{
+			sem_post(philo->info->lock_meal);
 			break ;
+		}
 		print_state(philo, "is sleeping");
 		ft_usleep(philo->info->time_to_sleep);
 		print_state(philo, "is thinking");
 	}
-	pthread_join(tid, NULL);
-	//sem_wait(philo->info->death);
-	if (philo->info->is_died)
-		exit(1);
 	exit(0);
 }
 
@@ -87,16 +83,22 @@ static int	exit_routine(t_info *info)
 	int	status;
 
 	i = -1;
-	//sem_wait(info->death);
-	waitpid(-1, &status, 0);
-	if (WIFEXITED(status) && WEXITSTATUS(status))
+	sem_wait(info->death);
+	while (++i < info->total)
 	{
-		while (status && ++i < info->total)
-			kill(info->pid[i], SIGKILL);
+		if (info->times_must_eat != -1
+			&& info->philo[i].count_meal < info->times_must_eat)
+		{
+			sem_post(info->lock_meal);
+			info->philo[i].count_meal = info->times_must_eat;
+		}
+		kill(info->pid[i], SIGKILL);
 	}
 	if (sem_close(info->fork) || sem_unlink("/fork")
 		|| sem_close(info->print) || sem_unlink("/print")
-		|| sem_close(info->lock_info) || sem_unlink("/lock_info"))
+		|| sem_close(info->lock_info) || sem_unlink("/lock_info")
+		|| sem_close(info->death) || sem_unlink("/death")
+		|| sem_close(info->lock_meal) || sem_unlink("/lock_meal"))
 		return (1);
 	free_exit(info);
 	return (0);
@@ -104,10 +106,13 @@ static int	exit_routine(t_info *info)
 
 int	philosopher(t_info *info)
 {
-	int	i;
+	int			i;
+	pthread_t	tid;
 
 	i = -1;
 	info->start_time = get_time();
+	pthread_create(&tid, NULL, &check_meal, (void *)info);
+	pthread_detach(tid);
 	while (++i < info->total)
 	{
 		info->pid[i] = fork();
@@ -120,7 +125,6 @@ int	philosopher(t_info *info)
 		}
 		usleep(300);
 	}
-	//sem_wait(info->death);
 	if (exit_routine(info))
 	{
 		printf(BRED"Error occurred when exiting threads\n");

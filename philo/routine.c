@@ -6,7 +6,7 @@
 /*   By: yang <yang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/21 17:02:19 by yang              #+#    #+#             */
-/*   Updated: 2022/03/10 10:58:04 by yang             ###   ########.fr       */
+/*   Updated: 2022/03/11 16:31:22 by yang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,8 @@ static void	*routine(void *argc)
 	{
 		pickup_fork(philo);
 		putdown_fork(philo);
+		if (philo->info->is_died)
+			break ;
 		print_state(philo, "is sleeping");
 		ft_usleep(philo->info->time_to_sleep);
 		print_state(philo, "is thinking");

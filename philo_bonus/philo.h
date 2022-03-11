@@ -6,7 +6,7 @@
 /*   By: yang <yang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/16 18:00:09 by yang              #+#    #+#             */
-/*   Updated: 2022/03/10 17:01:43 by yang             ###   ########.fr       */
+/*   Updated: 2022/03/11 16:29:51 by yang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ typedef struct s_info
 	sem_t			*lock_info;
 	sem_t			*fork;
 	sem_t			*death;
+	sem_t			*lock_meal;
 	pid_t			*pid;
 }	t_info;
 
@@ -52,7 +53,6 @@ typedef struct s_philo
 	int				first_fork;
 	int				second_fork;
 	int				count_meal;
-	pid_t			pid;
 	t_info			*info;
 }	t_philo;
 
@@ -65,6 +65,7 @@ long	get_time(void);
 long	current_time(long int start_time);
 /* ------------ routine for each threads ----------- */
 int		philosopher(t_info *info);
+void	*check_meal(void *argc);
 /* ------------ utils for philo ---------------- */
 void	print_state(t_philo *philo, char *str);
 void	*check_death(void *argc);

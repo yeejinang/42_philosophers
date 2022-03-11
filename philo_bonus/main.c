@@ -6,7 +6,7 @@
 /*   By: yang <yang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/16 17:59:18 by yang              #+#    #+#             */
-/*   Updated: 2022/03/11 12:42:27 by yang             ###   ########.fr       */
+/*   Updated: 2022/03/11 15:03:07 by yang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,8 @@ static int	init_sem(t_info *info)
 	info->lock_info = sem_open("/lock_info", O_CREAT, 0644, 1);
 	sem_unlink("/death");
 	info->death = sem_open("/death", O_CREAT, 0644, 0);
+	sem_unlink("/lock_meal");
+	info->lock_meal = sem_open("/lock_meal", O_CREAT, 0644, 0);
 	if (info->fork == SEM_FAILED || info->print == SEM_FAILED
 		|| info->lock_info == SEM_FAILED || info->death == SEM_FAILED)
 		return (1);

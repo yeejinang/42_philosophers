@@ -6,11 +6,39 @@
 /*   By: yang <yang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/21 17:02:19 by yang              #+#    #+#             */
-/*   Updated: 2022/03/11 16:28:30 by yang             ###   ########.fr       */
+/*   Updated: 2022/03/11 21:07:41 by yang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+/*void	death_checker(t_rules *r, t_philosopher *p)
+{
+	int i;
+
+	while (!(r->all_ate))
+	{
+		i = -1;
+		while (++i < r->nb_philo && !(r->dieded))
+		{
+			pthread_mutex_lock(&(r->meal_check));
+			if (time_diff(p[i].t_last_meal, timestamp()) > r->time_death)
+			{
+				action_print(r, i, "died");
+				r->dieded = 1;
+			}
+			pthread_mutex_unlock(&(r->meal_check));
+			usleep(100);
+		}
+		if (r->dieded)
+			break ;
+		i = 0;
+		while (r->nb_eat != -1 && i < r->nb_philo && p[i].x_ate >= r->nb_eat)
+			i++;
+		if (i == r->nb_philo)
+			r->all_ate = 1;
+	}
+}*/
 
 void	*check_death(void *argc)
 {

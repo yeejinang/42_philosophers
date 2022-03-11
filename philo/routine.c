@@ -6,7 +6,7 @@
 /*   By: yang <yang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/21 17:02:19 by yang              #+#    #+#             */
-/*   Updated: 2022/03/11 16:31:22 by yang             ###   ########.fr       */
+/*   Updated: 2022/03/11 21:14:34 by yang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,14 @@ static void	*routine(void *argc)
 	{
 		pickup_fork(philo);
 		putdown_fork(philo);
-		if (philo->info->is_died)
+		if (philo->count_meal == philo->info->times_must_eat)
+		{
+			pthread_mutex_lock(&philo->info->lock_info);
+			philo->info->done_eat++;
+			printf("done eat: %d\n", philo->info->done_eat);
+			pthread_mutex_unlock(&philo->info->lock_info);
 			break ;
+		}
 		print_state(philo, "is sleeping");
 		ft_usleep(philo->info->time_to_sleep);
 		print_state(philo, "is thinking");

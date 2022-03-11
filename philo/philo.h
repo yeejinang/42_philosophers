@@ -6,7 +6,7 @@
 /*   By: yang <yang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/16 18:00:09 by yang              #+#    #+#             */
-/*   Updated: 2022/03/10 12:04:00 by yang             ###   ########.fr       */
+/*   Updated: 2022/03/11 17:59:41 by yang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ typedef struct s_info
 	int				times_must_eat;
 	long			start_time;
 	int				is_died;
+	int				done_eat;
 	pthread_mutex_t print;
 	pthread_mutex_t	lock_info;
 	pthread_mutex_t	*fork;

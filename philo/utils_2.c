@@ -6,7 +6,7 @@
 /*   By: yang <yang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 15:34:40 by yang              #+#    #+#             */
-/*   Updated: 2022/03/10 12:02:23 by yang             ###   ########.fr       */
+/*   Updated: 2022/03/11 19:30:11 by yang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,12 @@
 void	check_death(t_info *info)
 {
 	int		i;
+	//int		philo_done;
 	long	last_meal;
 	long	last;
 
-	while (!info->is_died)
+	//philo_eat = 0;
+	while (!info->is_died && info->done_eat != info->total)
 	{
 		i = -1;
 		while (++i < info->total)
@@ -26,10 +28,9 @@ void	check_death(t_info *info)
 			pthread_mutex_lock(&info->lock_info);
 			last = info->philo[i].last_meal;
 			last_meal = current_time(info->start_time) - last;
-			if (last_meal > info->time_to_die || (info->times_must_eat != -1
-					&& info->philo[i].count_meal == info->times_must_eat))
+			if (last_meal > info->time_to_die || info->done_eat == info->total)
 			{
-				if (last_meal > info->time_to_die)
+				if (last_meal > info->time_to_die && info->philo[i].count_meal < info->times_must_eat)
 					print_state(&info->philo[i], "died");
 				info->is_died = 1;
 				pthread_mutex_unlock(&info->lock_info);
@@ -37,8 +38,11 @@ void	check_death(t_info *info)
 			}
 			pthread_mutex_unlock(&info->lock_info);
 		}
+		//printf("checking death\n");
 		usleep(500);
 	}
+	//return (NULL);
+	//exit(0);
 }
 
 void	print_state(t_philo *philo, char *str)

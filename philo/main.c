@@ -6,7 +6,7 @@
 /*   By: yang <yang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/16 17:59:18 by yang              #+#    #+#             */
-/*   Updated: 2022/03/10 12:04:38 by yang             ###   ########.fr       */
+/*   Updated: 2022/03/11 18:00:57 by yang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ static int	parse_info(int argc, char *argv[], t_info *info)
 	else
 		info->times_must_eat = -1;
 	info->is_died = 0;
+	info->done_eat = 0;
 	return (0);
 }
 

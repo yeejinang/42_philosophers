@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yang <yang@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: yang <yang@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/16 17:59:18 by yang              #+#    #+#             */
-/*   Updated: 2022/03/11 18:00:57 by yang             ###   ########.fr       */
+/*   Updated: 2022/03/12 13:30:50 by yang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,21 +29,14 @@ static int	parse_info(int argc, char *argv[], t_info *info)
 		info->times_must_eat = -1;
 	info->is_died = 0;
 	info->done_eat = 0;
+	info->end = 0;
 	return (0);
 }
 
 static void	set_fork(t_info *info, t_philo *philo)
 {
-	int	temp;
-
 	philo->first_fork = philo->id;
 	philo->second_fork = (philo->id + 1) % (info->total);
-	if (philo->second_fork < philo->first_fork)
-	{
-		temp = philo->first_fork;
-		philo->first_fork = philo->second_fork;
-		philo->second_fork = temp;
-	}
 }
 
 int	init(int argc, char *argv[], t_info *info)
@@ -64,6 +57,7 @@ int	init(int argc, char *argv[], t_info *info)
 		info->philo[i].count_meal = 0;
 		info->philo[i].last_meal = 0;
 		info->philo[i].info = info;
+		info->philo[i].done = 0;
 		set_fork(info, &info->philo[i]);
 		if (pthread_mutex_init(&info->fork[i], NULL))
 			return (2);
@@ -84,7 +78,7 @@ int	main(int argc, char *argv[])
 		res = init(argc, argv, &info);
 		if (res)
 		{
-			printf("Error occurred when intializing thread\n");
+			printf(BRED "Error occurred when intializing thread\n");
 			if (res == 2)
 				free_exit(&info);
 			return (1);
@@ -94,7 +88,7 @@ int	main(int argc, char *argv[])
 	}
 	else
 	{
-		printf(BRED"Incorrect arguments.\n");
+		printf(BRED "Incorrect arguments.\n");
 		return (1);
 	}
 }

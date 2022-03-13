@@ -3,65 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   routine.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yang <yang@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: yang <yang@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/21 17:02:19 by yang              #+#    #+#             */
-/*   Updated: 2022/03/11 21:07:41 by yang             ###   ########.fr       */
+/*   Updated: 2022/03/12 13:56:13 by yang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
-
-/*void	death_checker(t_rules *r, t_philosopher *p)
-{
-	int i;
-
-	while (!(r->all_ate))
-	{
-		i = -1;
-		while (++i < r->nb_philo && !(r->dieded))
-		{
-			pthread_mutex_lock(&(r->meal_check));
-			if (time_diff(p[i].t_last_meal, timestamp()) > r->time_death)
-			{
-				action_print(r, i, "died");
-				r->dieded = 1;
-			}
-			pthread_mutex_unlock(&(r->meal_check));
-			usleep(100);
-		}
-		if (r->dieded)
-			break ;
-		i = 0;
-		while (r->nb_eat != -1 && i < r->nb_philo && p[i].x_ate >= r->nb_eat)
-			i++;
-		if (i == r->nb_philo)
-			r->all_ate = 1;
-	}
-}*/
-
-void	*check_death(void *argc)
-{
-	long	last_meal;
-	t_philo	*philo;
-
-	philo = (t_philo *)argc;
-	while (1)
-	{
-		sem_wait(philo->info->lock_info);
-		last_meal = current_time(philo->info->start_time) - philo->last_meal;
-		if (last_meal > philo->info->time_to_die)
-		{
-			print_state(philo, "died");
-			sem_post(philo->info->death);
-			sem_post(philo->info->lock_info);
-			exit(0);
-		}
-		sem_post(philo->info->lock_info);
-		usleep (200);
-	}
-	return (NULL);
-}
+#include "philo_bonus.h"
 
 static void	philo_eat(t_philo *philo)
 {
@@ -144,10 +93,12 @@ int	philosopher(t_info *info)
 	while (++i < info->total)
 	{
 		info->pid[i] = fork();
+		printf("i: %d parent: %d child: %d\n", i, getppid(), getpid());
 		if (info->pid[i] == -1)
 			exit(1);
 		if (!info->pid[i])
 		{
+			printf("i: %d parent: %d child: %d\n", i, getppid(), getpid());
 			if (routine(&info->philo[i]))
 				printf(BRED"Error occurred when creating thread\n");
 		}

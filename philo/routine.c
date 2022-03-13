@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   routine.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yang <yang@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: yang <yang@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/21 17:02:19 by yang              #+#    #+#             */
-/*   Updated: 2022/03/11 21:14:34 by yang             ###   ########.fr       */
+/*   Updated: 2022/03/12 13:25:31 by yang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,22 +37,18 @@ static void	*routine(void *argc)
 	t_philo	*philo;
 
 	philo = (t_philo *)argc;
-	if (!(philo->id % 2))
+	if (philo->id % 2)
 		ft_usleep(philo->info->time_to_eat);
-	while (!philo->info->is_died)
+	while (!philo->info->end)
 	{
-		pickup_fork(philo);
+		pickup_fork(philo);;
 		putdown_fork(philo);
-		if (philo->count_meal == philo->info->times_must_eat)
-		{
-			pthread_mutex_lock(&philo->info->lock_info);
-			philo->info->done_eat++;
-			printf("done eat: %d\n", philo->info->done_eat);
-			pthread_mutex_unlock(&philo->info->lock_info);
+		if (check_meal(philo, philo->info) || philo->done)
 			break ;
-		}
 		print_state(philo, "is sleeping");
 		ft_usleep(philo->info->time_to_sleep);
+		if (philo->info->end)
+			break ;
 		print_state(philo, "is thinking");
 	}
 	return (NULL);
@@ -89,10 +85,9 @@ int	philosopher(t_info *info)
 	info->start_time = get_time();
 	while (++i < info->total)
 	{
-		info->philo[i].info = info;
 		if (pthread_create(&info->tid[i], NULL, &routine, &(info->philo[i])))
 		{
-			printf("Error occurred when creating threads\n");
+			printf(BRED"Error occurred when creating threads\n");
 			free_exit(info);
 			return (1);
 		}
@@ -100,7 +95,7 @@ int	philosopher(t_info *info)
 	check_death(info);
 	if (exit_routine(info))
 	{
-		printf("Error occurred when exiting threads\n");
+		printf(BRED"Error occurred when exiting threads\n");
 		free_exit(info);
 		return (1);
 	}

@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: yang <yang@student.42.fr>                  +#+  +:+       +#+         #
+#    By: yang <yang@student.42kl.edu.my>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/02/22 14:10:12 by yang              #+#    #+#              #
-#    Updated: 2022/03/10 11:50:39 by yang             ###   ########.fr        #
+#    Updated: 2022/03/12 13:43:31 by yang             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,7 +28,7 @@ CFLAGS	= -pthread
 
 DIC		= ./
 
-SRCS	= routine.c utils_1.c utils_2.c main.c
+SRCS	= routine.c checker.c utils_1.c utils_2.c main.c
 
 OBJS	= $(SRCS:.c=.o)
 

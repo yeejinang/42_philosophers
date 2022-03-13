@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yang <yang@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: yang <yang@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/16 17:59:18 by yang              #+#    #+#             */
-/*   Updated: 2022/03/11 15:03:07 by yang             ###   ########.fr       */
+/*   Updated: 2022/03/12 13:42:59 by yang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "philo_bonus.h"
 
 static int	parse_info(int argc, char *argv[], t_info *info)
 {
@@ -88,11 +88,13 @@ int	main(int argc, char *argv[])
 			return (1);
 		}
 		philosopher(&info);
+		system("leaks philo_bonus");
 		return (0);
 	}
 	else
 	{
 		printf(BRED"Incorrect arguments.\n");
+		system("leaks philo_bonus");
 		return (1);
 	}
 }
